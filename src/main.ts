@@ -1,7 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import router from './router/router'
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
+import './assets/tailwind.css'
+
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -18,7 +21,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 const db = getFirestore(firebaseApp);
 
-const app = createApp(App)
+const app = createApp(App).use(router)
 
 app.config.globalProperties.$db = db
 
