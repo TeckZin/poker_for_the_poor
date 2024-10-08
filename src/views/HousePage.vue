@@ -10,7 +10,10 @@
                   </div>
                   <div v-if="newSessionFlag">
                       <button @click="onCreateBackClick" class="text-[2vw] text-[#FCF0CC]" >BACK</button>
-                      <CreateSessionComponent> </CreateSessionComponent>
+                      <div class="">
+                          <CreateSessionComponent> </CreateSessionComponent>
+
+                      </div>
                   </div>
                   <div v-else>
                   <table class="w-full table-auto">

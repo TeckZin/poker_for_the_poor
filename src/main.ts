@@ -3,8 +3,8 @@ import App from './App.vue'
 import router from './router/router'
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
 import './assets/tailwind.css'
-
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -17,12 +17,25 @@ const firebaseConfig = {
   measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
 };
 
+// Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
+// Initialize Firestore and Auth
 const db = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
 
-const app = createApp(App).use(router)
+// Create Vue app
+const app = createApp(App);
 
-app.config.globalProperties.$db = db
+// Use router
+app.use(router);
 
-app.mount('#app')
+// Provide Firestore and Auth to the app
+app.provide('db', db);
+app.provide('auth', auth);
+
+// Mount the app
+app.mount('#app');
+
+// Export auth for use in other files if needed
+export { auth };

@@ -1,7 +1,7 @@
 <template>
   <div class='text-[4vw] flex flex-col'>
       <div  v-if="homeView"
-          class='flex flex-row'>
+          class='flex flex-row text-button-text-color'>
           <button
               @click="(event) => handleClick('JOIN')"
               :class="[buttonClass, 'mr-3']">JOIN</button>
