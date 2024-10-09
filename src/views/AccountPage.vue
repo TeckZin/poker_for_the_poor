@@ -1,18 +1,20 @@
 <template>
     <div>
+
+      <SignOutBarComponent> </SignOutBarComponent>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, Ref } from 'vue'
-import { useRoute } from 'vue-router'
+import SignOutBarComponent from '../components/SignOutBarComponent.vue'
 
 export default defineComponent({
   components: {
-
+      SignOutBarComponent,
   },
   name: 'AccountPage',
-  setup() {
+  setup(props, {emit}) {
     // Component logic can be added here
 
     return {

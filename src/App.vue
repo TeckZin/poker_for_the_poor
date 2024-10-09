@@ -3,8 +3,9 @@
     <div class="flex justify-start
         bg-main-primary-color min-w-screen
         min-h-screen
-        text-main-primary-font-color">
-        <router-view></router-view>
+        text-main-primary-font-color
+        ">
+        <router-view class="w-full h-full"></router-view>
     </div>
 </template>
 

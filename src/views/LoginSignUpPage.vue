@@ -1,10 +1,14 @@
 <template>
     <div>
         <div v-if="accountActionType === 'login'">
-            <LoginComponent> </LoginComponent>
+            <LoginComponent
+             @type-change="handleAccChange"
+            > </LoginComponent>
         </div>
         <div v-else>
-            <SignUpComponent> </SignUpComponent>
+            <SignUpComponent
+            @type-change="handleAccChange"
+            > </SignUpComponent>
         </div>
     </div>
 </template>
@@ -27,8 +31,15 @@ export default defineComponent({
     const route = useRoute();
     const accountActionType = ref(route.params.accountActionType as string)
 
+
+    const handleAccChange = (value: string) => {
+        console.log(value)
+        accountActionType.value = value
+    }
+
     return {
-        accountActionType
+        accountActionType,
+        handleAccChange
 
     }
   },
