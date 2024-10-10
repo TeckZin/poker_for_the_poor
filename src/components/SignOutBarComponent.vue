@@ -3,6 +3,7 @@
       <div  class="text-[2vw] text-button-text-color">
           <div v-if="isLoggedIn">
               <div v-if="isLoggedIn">
+                  <router-link to="/account/info"> Account </router-link>
                   <button @click="() => {signOutClick()}"> Sign Out </button>
               </div>
               <div v-else>

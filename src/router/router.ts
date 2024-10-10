@@ -1,12 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import HomePage from '@/views/HomePage.vue'
 import HousePage from '@/views/HousePage.vue'
 import LoginSignUpPage from '@/views/LoginSignUpPage.vue'
 import AccountPage from '@/views/AccountPage.vue'
+import NotFoundPage from '@/views/NotFoundPage.vue'
+import EmailVerificationPage from '@/views/EmailVerificationPage.vue'
 
 
 // import About from '@/views/About.vue'
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -23,12 +25,27 @@ const routes: Array<RouteRecordRaw> = [
     name: 'LoginSignUpPage',
     component: LoginSignUpPage
   },
+  {
+    path: '/acccount/email-verified',
+    name: 'EmailVerificationPage',
+    component: EmailVerificationPage
+  },
 
   {
     path: '/account/info',
     name: 'AccountPage',
-    component: AccountPage
-  }
+    component: AccountPage,
+    meta: {
+        requiresAuth: true,
+    }
+  },
+  {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFoundPage',
+      component: NotFoundPage,
+  },
+
+
   // {
   //   path: '/about',
   //   name: 'About',
@@ -36,9 +53,43 @@ const routes: Array<RouteRecordRaw> = [
   // }
 ]
 
+
+
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+
+    const getCurrentUser = () => {
+        return new Promise((reslove, reject) => {
+            const removeListener = onAuthStateChanged(
+                getAuth(),
+                (user) => {
+                    removeListener()
+                    reslove(user)
+                },
+                reject
+            )
+
+        })
+
+
+    }
+
+router.beforeEach(async (to, from, next) => {
+    if (to.matched.some((record) => record.meta.requiresAuth )) {
+        if(await getCurrentUser()) {
+            next();
+        } else {
+            alert("Not sign in")
+            next("/account/login")
+        }
+
+    } else {
+        next()
+    }
+
 })
 
 export default router

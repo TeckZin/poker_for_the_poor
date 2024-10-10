@@ -31,6 +31,12 @@ import { useRouter } from 'vue-router'
 export default defineComponent({
   components: {
   },
+  props: {
+    pageRouteName: {
+        type: String,
+        required: true
+    }
+  },
   name: 'AccountLoginComponent',
   emit: ['type-change'],
   setup(props, {emit}) {
@@ -52,6 +58,23 @@ export default defineComponent({
     const inputClass = "w-full border-b border-white bg-transparent text-white px-3 py-2 rounded pl-10 focus:outline-none focus:ring-2 focus:ring-blue-600"
     const labelClass = "text-[1vw]"
 
+    const currUser = ref<User | null>(null)
+    onMounted(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currUser.value = user
+                if (!user.emailVerified) {
+                    router.push({ name: "EmailVerificationPage"})
+
+                } else {
+                    router.push({ name: props.pageRouteName })
+
+                }
+
+            }
+
+        })
+    })
 
     const loginInClick = async () => {
 
@@ -61,9 +84,33 @@ export default defineComponent({
         }
         signInWithEmailAndPassword(auth, email.value, password.value).then((data) => {
             user.value = data.user
-            router.push({ name: 'AccountPage' })
+            router.push({ name: props.pageRouteName })
         }).catch((err) => {
-            errorMessage.value = err.message
+            switch(err.code) {
+
+                case 'auth/invalid-email':
+                  errorMessage.value = 'Invalid email address. Please check and try again.';
+                  break;
+                case 'auth/user-disabled':
+                  errorMessage.value = 'This account has been disabled. Please contact support.';
+                  break;
+                case 'auth/operation-not-allowed':
+                  errorMessage.value = 'This operation is not allowed. Please contact support.';
+                  break;
+                case 'auth/user-not-found':
+                  errorMessage.value =  'No account found with this email. Please sign up.';
+                  break;
+                case 'auth/wrong-password':
+                  errorMessage.value = 'Incorrect password. Please try again.';
+                  break;
+                case 'auth/too-many-requests':
+                  errorMessage.value = 'Too many unsuccessful attempts. Please try again later.';
+                  break;
+                default:
+                  errorMessage.value = 'An unexpected error occurred. Please try again.';
+                  break;
+
+            }
         })
 
         return

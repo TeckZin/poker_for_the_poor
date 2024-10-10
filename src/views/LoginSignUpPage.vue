@@ -3,11 +3,13 @@
         <div v-if="accountActionType === 'login'">
             <LoginComponent
              @type-change="handleAccChange"
+            :pageRouteName="pageRouteName"
             > </LoginComponent>
         </div>
         <div v-else>
             <SignUpComponent
             @type-change="handleAccChange"
+            :pageRouteName="pageRouteName"
             > </SignUpComponent>
         </div>
     </div>
@@ -26,11 +28,14 @@ export default defineComponent({
 
   },
   name: 'LoginSignUpPage',
-  setup() {
+  setup(props) {
     // Component logic can be added here
     const route = useRoute();
     const accountActionType = ref(route.params.accountActionType as string)
+    // let pageRouteName = ref(route.params.pageRouteName as string)
 
+
+    const pageRouteName = ref("AccountPage")
 
     const handleAccChange = (value: string) => {
         console.log(value)
@@ -39,7 +44,8 @@ export default defineComponent({
 
     return {
         accountActionType,
-        handleAccChange
+        handleAccChange,
+        pageRouteName
 
     }
   },

@@ -1,14 +1,21 @@
 <template>
   <div class="flex flex-col ml-10 justify-top  font-bebas-neue w-full">
-      <p class="text-[2vw]"> House Id: {{ houseId }} </p>
+      <div class="flex  mt-4 flex-row justify-between">
+          <p class="text-[2vw]"> House Id: {{ houseId }} </p>
+          <SignOutBarComponent
+            class="mr-7"
+            @is-logged-in="handleLoggedInChnage"
+            :pageRouteName="HousePage"
+          > </SignOutBarComponent>
+      </div>
       <div class="flex flex-row">
           <div :class="newSessionFlag ? 'w-full' : 'w-1/4'">
               <div>
                   <p class="text-[4vw]"> Sessions </p>
-                  <div v-if="!newSessionFlag">
+                  <div v-if="!newSessionFlag && isLoggedIn">
                       <button @click="onCreateClick" class="text-[2vw] text-[#FCF0CC]" > Create New Session </button>
                   </div>
-                  <div v-if="newSessionFlag">
+                  <div v-if="newSessionFlag && isLoggedIn">
                       <button @click="onCreateBackClick" class="text-[2vw] text-[#FCF0CC]" >BACK</button>
                       <div class="">
                           <CreateSessionComponent> </CreateSessionComponent>
@@ -39,7 +46,7 @@
               </div>
           </div>
           <div v-if="!newSessionFlag" class="w-3/4 h-full">
-              <SessionDetailComponent :session="selectedSession"> </SessionDetailComponent>
+              <SessionDetailComponent :session="selectedSession" :isLoggedIn="isLoggedIn"> </SessionDetailComponent>
           </div>
       </div>
   </div>
@@ -51,6 +58,7 @@ import { getFirestore, collection, getDocs, doc, Firestore } from "firebase/fire
 import { useRoute } from 'vue-router'
 import SessionDetailComponent from '../components/SessionDetailComponent.vue'
 import CreateSessionComponent from '../components/CreateSessionComponent.vue'
+import SignOutBarComponent from '../components/SignOutBarComponent.vue'
 
 interface Session {
     sessionId: string,
@@ -69,6 +77,7 @@ export default defineComponent({
     components: {
         SessionDetailComponent,
         CreateSessionComponent,
+        SignOutBarComponent,
     },
     name: 'HousePage',
     data() {
@@ -101,6 +110,7 @@ export default defineComponent({
         const selectedSession: Ref<Session | null> = ref(null);
         const newSessionFlag = ref(false);
 
+        const isLoggedIn = ref(true)
 
         const fetchSessions = async (db: Firestore, houseId: string) => {
           try {
@@ -124,12 +134,20 @@ export default defineComponent({
         });
 
 
+        const handleLoggedInChnage = (value: boolean) => {
+            console.log(value)
+            isLoggedIn.value = value
+        }
+
+
 
         return {
           houseId,
           sessions,
           selectedSession,
-          newSessionFlag
+          newSessionFlag,
+          isLoggedIn,
+          handleLoggedInChnage
         }
       }
 })

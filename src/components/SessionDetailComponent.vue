@@ -22,7 +22,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="flex justify-start text-button-text-color">
+      <div v-if="isLoggedIn" class="flex justify-start text-button-text-color">
           <button>EDIT</button>
       </div>
     </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from 'vue'
+import { defineComponent, PropType, ref, computed, onMounted} from 'vue'
 
 interface Session {
   sessionId: string,
@@ -50,10 +50,15 @@ export default defineComponent({
     session: {
       type: Object as PropType<Session | null>,
       required: false,
+    },
+    isLoggedIn: {
+        type: Boolean,
+        required: true,
     }
   },
   setup(props) {
     const thClass = ref("text-left")
+
 
     const getProfit = (index: number): number => {
       if (props.session) {
@@ -64,7 +69,7 @@ export default defineComponent({
 
     return {
       thClass,
-      getProfit
+      getProfit,
     }
   }
 })

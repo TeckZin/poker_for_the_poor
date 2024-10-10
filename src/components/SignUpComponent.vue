@@ -43,12 +43,19 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAuth, createUserWithEmailAndPassword, User } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, User, sendEmailVerification, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, collection, getDocs, doc, Firestore } from "firebase/firestore";
 
 
 export default defineComponent({
   components: {
 
+  },
+  props: {
+    pageRouteName: {
+        type: String,
+        required: true
+    }
   },
   name: 'AccountSignUpComponent',
   setup(props, {emit}) {
@@ -63,9 +70,32 @@ export default defineComponent({
     const errorMessage = ref('')
     const password = ref('');
     const confirmPassword = ref('');
+    const emailVerfied = ref(false)
 
     const inputClass = "w-full border-b border-white bg-transparent text-white px-3 py-2 rounded pl-10 focus:outline-none focus:ring-2 focus:ring-blue-600"
     const labelClass = "text-[1vw]"
+
+    const db = getFirestore()
+
+
+    const currUser = ref<User | null>(null)
+    onMounted(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currUser.value = user
+                if (!user.emailVerified) {
+                    router.push({ name: "EmailVerificationPage"})
+
+                } else {
+                    router.push({ name: props.pageRouteName })
+
+                }
+
+            }
+
+        })
+    })
+
 
 
     const signUpClick = async () => {
@@ -79,13 +109,53 @@ export default defineComponent({
 
         createUserWithEmailAndPassword(auth, email.value, password.value).then((data) => {
             user.value = data.user;
-            router.push({ name: 'AccountPage' })
+            sendVerficationEmail(data.user)
+
+            router.push({ name: "EmailVerificationPage"})
         }).catch((err) => {
             // implement error code here
-            errorMessage.value = err.message
+            switch(err.code) {
+                case 'auth/invalid-email':
+                  errorMessage.value = 'Invalid email address. Please check and try again.';
+                  break;
+                case 'auth/user-disabled':
+                  errorMessage.value = 'This account has been disabled. Please contact support.';
+                  break;
+                case 'auth/operation-not-allowed':
+                  errorMessage.value = 'This operation is not allowed. Please contact support.';
+                  break;
+                     case 'auth/email-already-in-use':
+                  errorMessage.value = 'An account with this email already exists. Please sign in.'
+                  break;
+                case 'auth/weak-password':
+                  errorMessage.value = 'Password is too weak. Please choose a stronger password.';
+                  break;
+                default:
+                  errorMessage.value = 'An unexpected error occurred. Please try again.';
+                  break;
+            }
 
         });
+
+
+
+
     }
+
+
+    const sendVerficationEmail = (user: User) => {
+        sendEmailVerification(user).then(() => {
+            console.log("verfication send")
+        }).catch((err) => {
+            console.log("error")
+
+        })
+
+
+
+    }
+
+
     const loginInClick = () => {
         emit('type-change', 'login')
         return
