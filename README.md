@@ -52,7 +52,7 @@
 ├── firestore.rules            # Firestore database rules
 ├── firebase.json              # Firebase hosting configuration
 └── README.md                  # Project documentation
-\`\`\`
+```
 
 ## Firebase Configuration
 
