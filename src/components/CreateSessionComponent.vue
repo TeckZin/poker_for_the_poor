@@ -49,29 +49,28 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType, ref, Ref, computed } from 'vue'
+import { Session } from '../models/sessionTypes'
 
-interface Session {
-  sessionId: string,
-  Name: string,
-  InValue: number[],
-  OutValue: number[],
-  Players: string[],
-  Date: string,
-}
+
 
 export default defineComponent({
   name: 'CreateSessionComponent',
   props: {
   },
   setup() {
-   const session: Ref<Session> = ref({
+    const session: Ref<Session> = ref({
       sessionId: '',
-      Name: '',
-      InValue: [],
-      OutValue: [],
-      Players: [],
-      Date: '',
+      name: '',
+      date: '',
+      players: [],
+      totalBuyIn: 0,
+      totalBuyOut: 0,
+      bigBlind: 0,
+      smallBlind: 0,
+      parentHostId: '',
+      hostUid: '',
     });
+
     const amountOfPlayers: Ref<number> = ref(2)
     const totalBuyIn: Ref<number> = ref(0)
     const totalBuyOut: Ref<number> = ref(0)

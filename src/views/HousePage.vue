@@ -36,8 +36,8 @@
                       </thead>
                       <tbody class="text-[1.5vw] w-full">
                           <tr v-for="session in sessions" :key="session.sessionId">
-                              <td>{{ session.Date }}</td>
-                              <td>{{ session.Name }}</td>
+                              <td>{{ session.date }}</td>
+                              <td>{{ session.name }}</td>
                               <td class='text-[#FCF0CC]'> <button @click="() => viewMoreClick(session) ">VIEW MORE</button></td>
                           </tr>
                       </tbody>
@@ -54,24 +54,15 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, Ref } from 'vue'
-import { getFirestore, collection, getDocs, doc, Firestore } from "firebase/firestore";
+import { getFirestore, collection, getDoc, doc, Firestore } from "firebase/firestore";
 import { useRoute } from 'vue-router'
+import { Session, Sessions} from '../models/sessionTypes'
+import { House } from '../models/houseTypes'
+import { Player } from '../models/playerTypes'
 import SessionDetailComponent from '../components/SessionDetailComponent.vue'
 import CreateSessionComponent from '../components/CreateSessionComponent.vue'
 import SignOutBarComponent from '../components/SignOutBarComponent.vue'
 
-interface Session {
-    sessionId: string,
-    Name: string,
-    InValue: number[],
-    OutValue: number[],
-    Players: string[],
-    Date: string,
-
-}
-interface Sessions {
-    sessions: Session[];
-}
 
 export default defineComponent({
     components: {
@@ -109,33 +100,89 @@ export default defineComponent({
         const houseId = ref(route.params.houseId as string);
         const selectedSession: Ref<Session | null> = ref(null);
         const newSessionFlag = ref(false);
+        const errorMessage = ref('')
 
         const isLoggedIn = ref(true)
 
-        const fetchSessions = async (db: Firestore, houseId: string) => {
-          try {
-            const houseDocRef = doc(db, "HouseID", houseId);
-            const sessionsCollectionRef = collection(houseDocRef, "sessions");
-            const sessionsSnapshot = await getDocs(sessionsCollectionRef);
 
-            const fetchedSessions: Session[] = sessionsSnapshot.docs.map(doc => ({
-              ...doc.data(),
-              sessionId: doc.id
-            } as Session));
+        const currentHouse: Ref<House | null>= ref(null)
 
-            sessions.value = fetchedSessions;
-          } catch (error) {
-            console.error("Error fetching sessions:", error);
-          }
+
+        const fetchHouseSessions = async (db: Firestore, houseId: string) => {
+            const houseIdDocRef = doc(db, 'house_ids', houseId)
+            getDoc(houseIdDocRef).then((rawData) => {
+
+                if (rawData.exists()) {
+                    const data = rawData.data();
+                    currentHouse.value = {
+                        hostUid: data.hostUid ?? '',
+                        sessionsIds: data.sessions ?? [],
+                        totalPlayers: data.totalPlayers ?? 0,
+                        totalBuyIn: data.totalBuyIn ?? 0
+                    };
+                    console.log(currentHouse.value);
+                    return fetchSessions(db, data.sessions)
+                } else {
+                    console.log('No such document!');
+                    currentHouse.value = null;
+                }
+
+
+            }).catch((err) => {
+                errorMessage.value = err.message
+
+
+            })
+
         };
 
+        const fetchSessions = async (db: Firestore, sessionsIds: string[]) => {
+            console.log('here')
+            for (const sessionId of sessionsIds) {
+                const sessionIdsDocRef = doc(db, 'session_ids', sessionId)
+                getDoc(sessionIdsDocRef).then((rawData) => {
+                    if (rawData.exists()) {
+                       const data = rawData.data()
+                        const playersArray: Player[] = Object.entries(data.players || {})
+                        .map(([key, value]: [string, any]) => ({
+                          name: value.name || '',
+                          buyIn: Number(value.buyIn) || 0,
+                          buyOut: Number(value.buyOut) || 0,
+                          member: value.member || false,
+                          uid: value.uid || null
+                        }));
+
+                        const currSession: Session = {
+                          sessionId: sessionId,
+                          name: data.name || '',
+                          date: data.date || '',
+                          players: playersArray ,
+                          totalBuyIn: data.totalBuyIn || 0,
+                          totalBuyOut: data.totalBuyOut || 0,
+                          bigBlind: data.bigBlind || 0,
+                          smallBlind: data.smallBlind || 0,
+                          parentHostId: data.parentHostId || '',
+                          hostUid: data.hostUid || ''
+                        };
+                        console.log(currSession)
+                        sessions.value.push(currSession);
+
+                    }
+
+                })
+
+            }
+
+
+        }
+
+
         onMounted(() => {
-          fetchSessions(db, houseId.value);
+          fetchHouseSessions(db, houseId.value);
         });
 
 
         const handleLoggedInChnage = (value: boolean) => {
-            console.log(value)
             isLoggedIn.value = value
         }
 

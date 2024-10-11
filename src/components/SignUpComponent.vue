@@ -111,6 +111,7 @@ export default defineComponent({
             user.value = data.user;
             sendVerficationEmail(data.user)
 
+
             router.push({ name: "EmailVerificationPage"})
         }).catch((err) => {
             // implement error code here
@@ -124,7 +125,7 @@ export default defineComponent({
                 case 'auth/operation-not-allowed':
                   errorMessage.value = 'This operation is not allowed. Please contact support.';
                   break;
-                     case 'auth/email-already-in-use':
+                case 'auth/email-already-in-use':
                   errorMessage.value = 'An account with this email already exists. Please sign in.'
                   break;
                 case 'auth/weak-password':
@@ -145,9 +146,10 @@ export default defineComponent({
 
     const sendVerficationEmail = (user: User) => {
         sendEmailVerification(user).then(() => {
-            console.log("verfication send")
+            router.push({ name: "EmailVerificationPage"})
+
         }).catch((err) => {
-            console.log("error")
+            errorMessage.value = err.message
 
         })
 

@@ -96,8 +96,7 @@ export default defineComponent({
         if (this.houseId) {
                 const db = getFirestore();
                 const fetchSpecificToken = async () => {
-                  const tokenDocRef = doc(db, 'HouseID', this.houseId);
-
+                  const tokenDocRef = doc(db, 'house_ids', this.houseId);
                   try {
                     const docSnap = await getDoc(tokenDocRef);
                     if (docSnap.exists()) {
