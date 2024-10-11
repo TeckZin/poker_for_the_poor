@@ -20,7 +20,7 @@
 
 ## Project Structure
 
-\`\`\`bash
+```bash
 .
 ├── firebase/                  # Firebase configuration and Firestore rules
 ├── public/                    # Public assets
