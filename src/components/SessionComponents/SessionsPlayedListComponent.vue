@@ -9,9 +9,9 @@ import { defineComponent, ref, onMounted, Ref, PropType, watch } from 'vue'
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, doc, getDoc, DocumentReference, getDocs } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
-import { House } from '../models/houseTypes'
-import { PlayerMember } from '../models/playerTypes'
-import { Session } from '../models/sessionTypes'
+import { House } from '@/models/HouseTypes'
+import { PlayerMember } from '@/models/PlayerTypes'
+import { Session } from '@/models/SessionTypes'
 
 
 export default defineComponent({
@@ -33,35 +33,28 @@ export default defineComponent({
 
         const sessions: Ref<Session[]> = ref([])
 
-
-        const getSession = async (sessionRef: DocumentReference): Promise<House | null> => {
-            getDoc(sessionRef).then((sessionSnap) => {
-                if(sessionSnap.exists()) {
+        const getSession = async (sessionRef: DocumentReference): Promise<Session | null> => {
+            try {
+                const sessionSnap = await getDoc(sessionRef)
+                if (sessionSnap.exists()) {
                     return {
                         ...sessionSnap.data()
                     } as Session
                 }
-
-
-
-            }).catch((error) => {
+                return null
+            } catch (error) {
                 errorMessage.value = 'Failed to fetch one session'
                 return null
-            })
-
-            return null
-
-
+            }
         }
 
-
-        const getPlayesSessions = async () => {
+       const getPlayedSessions = async () => {
             try {
-                if(!props.currUser?.sessionsPlayedIdsRef){
+                if (!props.currUser?.sessionsPlayedIdsRef) {
                     sessions.value = []
                     return
                 }
-                const sessionsPromises = props.curruser.sessionsPlayedIdsRef.map(ref =>
+                const sessionsPromises = props.currUser.sessionsPlayedIdsRef.map(ref =>
                     getSession(ref)
                 )
                 const results = await Promise.all(sessionsPromises)
@@ -70,11 +63,10 @@ export default defineComponent({
                 errorMessage.value = "Failed to fetch sessions"
                 sessions.value = []
             }
-
         }
 
         watch(() => props.currUser, () => {
-            getPlayesSessions()
+            getPlayedSessions()
         }, {immediate: true})
 
         return {

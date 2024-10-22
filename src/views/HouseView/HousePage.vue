@@ -5,7 +5,6 @@
       <SignOutBarComponent
         class="mr-7"
         @is-logged-in="handleLoggedInChange"
-        :pageRouteName="HousePage"
       > </SignOutBarComponent>
     </div>
     <div class="flex flex-row">
@@ -64,11 +63,11 @@
 import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { getFirestore, collection, getDoc, doc, Firestore } from "firebase/firestore";
 import { useRoute, useRouter } from 'vue-router'
-import { Session, Sessions } from '../models/sessionTypes'
-import { House } from '../models/houseTypes'
-import { Player } from '../models/playerTypes'
-import SessionDetailComponent from '../components/SessionDetailComponent.vue'
-import SignOutBarComponent from '../components/SignOutBarComponent.vue'
+import { Session, Sessions } from '@/models/SessionTypes'
+import { House } from '@/models/HouseTypes'
+import { Player } from '@/models/PlayerTypes'
+import SessionDetailComponent from '@/components/SessionComponents/SessionDetailComponent.vue'
+import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
 
 export default defineComponent({
   components: {
@@ -90,6 +89,7 @@ export default defineComponent({
     const thClass = "text-left"
     const houseDivClass = "flex flex-row text-[2vw]"
     const housePClass = "mr-5"
+    const pageRouteName = ref('HousePage')
 
     const onCreateClick = () => {
       console.log('Navigating to CreateSessionPage with houseId:', houseId.value)
@@ -113,7 +113,7 @@ export default defineComponent({
             houseId: rawData.id
           } as House;
           console.log(currentHouse.value);
-          return fetchSessions(db, data.sessions)
+          return fetchSessions(db, currentHouse.value.sessionsIds ?? '')
         } else {
           console.log('No such document!');
           currentHouse.value = null;
@@ -131,7 +131,7 @@ export default defineComponent({
             const data = rawData.data()
             const playersArray: Player[] = Object.entries(data.players || {})
               .map(([key, value]: [string, any]) => ({
-                username: value.name || '',
+                username: value.username || '',
                 buyIn: Number(value.buyIn) || 0,
                 buyOut: Number(value.buyOut) || 0,
                 member: value.member || false,
@@ -181,7 +181,8 @@ export default defineComponent({
       onCreateBackClick,
       currentHouse,
       houseDivClass,
-      housePClass
+      housePClass,
+      pageRouteName
     }
   }
 })

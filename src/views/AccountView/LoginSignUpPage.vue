@@ -18,8 +18,8 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { useRoute } from 'vue-router'
-import LoginComponent from '../components/LoginComponent.vue'
-import SignUpComponent from '../components/SignUpComponent.vue'
+import LoginComponent from '@/components/AccountComponents/LoginComponent.vue'
+import SignUpComponent from '@/components/AccountComponents/SignUpComponent.vue'
 
 export default defineComponent({
   components: {

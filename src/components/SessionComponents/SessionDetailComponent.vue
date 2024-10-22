@@ -15,7 +15,8 @@
         </thead>
         <tbody>
           <tr v-for="(player, index) in session.players" :key="index">
-            <td>{{ player.name }}</td>
+
+            <td>{{ player.username }}</td>
             <td>{{ player.buyIn }}</td>
             <td>{{ player.buyOut }}</td>
             <td>{{ player.buyOut - player.buyIn }}</td>
@@ -24,7 +25,9 @@
       </table>
       <div v-if="isLoggedIn" class="flex flex-row justify-evenly
                   text-button-text-color">
-          <button :class="[buttonClass, 'px-4 py-1.5']" >EDIT</button>
+          <button :class="[buttonClass, 'px-4 py-1.5']"
+                             @click="handleEditClick"
+              >EDIT</button>
           <button :class="[buttonClass, 'px-3 py-2']">VIEW MORE</button>
       </div>
     </div>
@@ -36,8 +39,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, onMounted} from 'vue'
-import {Session} from '../models/sessionTypes'
-
+import {Session} from '@/models/SessionTypes'
+import { useRouter } from 'vue-router'
 
 
 export default defineComponent({
@@ -53,14 +56,21 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const router = useRouter()
     const thClass = ref("text-left")
     const buttonClass = "button-custom-hover-class text-[2vw]"
+
+
+    const handleEditClick = () => {
+        router.push({name: 'EditSessionPage', params: {sessionId: props.session?.sessionId ?? ''}})
+    }
 
 
 
     return {
       thClass,
       buttonClass,
+      handleEditClick,
     }
   }
 })

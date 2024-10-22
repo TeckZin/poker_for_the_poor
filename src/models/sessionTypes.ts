@@ -1,4 +1,4 @@
-import { Player } from './playerTypes'
+import { Player } from './PlayerTypes'
 import { DocumentReference } from 'firebase/firestore';
 
 export interface Session {

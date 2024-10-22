@@ -1,13 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import HomePage from '@/views/HomePage.vue'
-import HousePage from '@/views/HousePage.vue'
-import LoginSignUpPage from '@/views/LoginSignUpPage.vue'
-import AccountPage from '@/views/AccountPage.vue'
-import NotFoundPage from '@/views/NotFoundPage.vue'
-import EmailVerificationPage from '@/views/EmailVerificationPage.vue'
-import CreateHousePage from '@/views/CreateHousePage.vue'
-import CreateSessionPage from '@/views/CreateSessionPage.vue'
+import HomePage from '@/views/HomeView/HomePage.vue'
+import HousePage from '@/views/HouseView/HousePage.vue'
+import LoginSignUpPage from '@/views/AccountView/LoginSignUpPage.vue'
+import AccountPage from '@/views/AccountView/AccountPage.vue'
+import NotFoundPage from '@/views/OtherView/NotFoundPage.vue'
+import EmailVerificationPage from '@/views/OtherView/EmailVerificationPage.vue'
+import CreateHousePage from '@/views/HouseView/CreateHousePage.vue'
+import CreateSessionPage from '@/views/SessionView/CreateSessionPage.vue'
+import EditSessionPage from '@/views/SessionView/EditSessionPage.vue'
+import SessionDetailPage from '@/views/SessionView/SessionDetailPage.vue'
 
 
 // import About from '@/views/About.vue'
@@ -24,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/house-page/:userId/create',
+    path: '/house-page/create',
     name: 'CreateHousePage',
     component: CreateHousePage,
     props: true
@@ -33,6 +35,18 @@ const routes: Array<RouteRecordRaw> = [
     path: '/session-page/create/:currHouseId',
     name: 'CreateSessionPage',
     component: CreateSessionPage,
+    props: true
+  },
+  {
+    path: '/session-page/view/:sessionId',
+    name: 'SessionDetailPage',
+    component: SessionDetailPage,
+    props: true
+  },
+  {
+    path: '/session-page/edit/:sessionId',
+    name: 'EditSessionPage',
+    component: EditSessionPage,
     props: true
   },
   {

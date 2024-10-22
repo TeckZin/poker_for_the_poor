@@ -44,7 +44,14 @@
                 > </SessionsPlayedListComponent>
             </div>
             <div :class="[containerDivClass]">
-                <p> Home Games </p>
+                <div class="flex flex-row justify-between">
+                    <p> Home Games </p>
+                    <button class="text-button-text-color text-[1.5vw]"
+                            @click="handleHomeClick"
+                        >Search public house</button>
+
+                </div>
+
                 <HostedHouseListComponent
                         :currUser="currUserPlayer"
                 > </HostedHouseListComponent>
@@ -69,11 +76,11 @@ import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { useRouter } from 'vue-router'
-import { House } from '../models/houseTypes'
-import {PlayerMember} from '../models/playerTypes'
-import SignOutBarComponent from '../components/SignOutBarComponent.vue'
-import HostedHouseListComponent from '../components/HostedHouseListComponent.vue'
-import SessionsPlayedListComponent from '../components/SessionsPlayedListComponent.vue'
+import { House } from '@/models/HouseTypes'
+import {PlayerMember} from '@/models/PlayerTypes'
+import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
+import HostedHouseListComponent from '@/components/HouseComponents/HostedHouseListComponent.vue'
+import SessionsPlayedListComponent from '@/components/SessionComponents/SessionsPlayedListComponent.vue'
 
 export default defineComponent({
   components: {
@@ -98,6 +105,11 @@ export default defineComponent({
 
     const currUser = ref<User | null>(null)
     const currUserPlayer = ref<PlayerMember | null>(null);
+
+
+    const handleHomeClick = () => {
+        router.push({name: "HomePage"})
+    }
 
 
     const createHouseClick = () => {
@@ -171,7 +183,9 @@ export default defineComponent({
         divClass,
         containerDivClass,
          createHouseClick,
-         currUserPlayer
+         currUserPlayer,
+         handleHomeClick
+
 
     }
   },

@@ -1,27 +1,25 @@
 <template>
   <div class="flex flex-col ml-10 justify-top font-bebas-neue w-full">
     <div class="flex flex-row justify-between mt-3">
-      <p class="text-[3vw]">House Id: {{currHouseId}}</p>
+      <button class="text-[2.5vw] text-button-text-color" @click="handleBackClick">
+        back
+      </button>
       <SignOutBarComponent
         class="mr-7"
         @is-logged-in="handleLoggedInChange"
-        :pageRouteName="pageRouteName"
       />
     </div>
-    <div class="w-full flex flex-row h-[70vh]">
+    <p class="text-[3vw]">House Id: {{currHouseId}}</p>
+    <div class="w-full flex flex-row h-full">
       <div class="flex flex-col w-1/4 mr-[5vw]">
         <div class="overflow-y-auto flex-grow">
           <div :class="[infoDivClass]">
+            <label :class="[infoLabelClass]" for='name'>Name: </label>
+            <input :class="[infoInputClass]" v-model="session.name" type="text" placeholder="session name" />
+          </div>
+          <div :class="[infoDivClass]">
             <label :class="[infoLabelClass]" for='date'>Date: </label>
             <input :class="[infoInputClass]" v-model="session.date" type="date" />
-          </div>
-          <div :class="[infoDivClass]">
-            <label :class="[infoLabelClass]" for='totalBuyIn'>Total Buy In: </label>
-            <input :class="[infoInputClass]" v-model="session.totalBuyIn" type="number" />
-          </div>
-          <div :class="[infoDivClass]">
-            <label :class="[infoLabelClass]" for='totalBuyOut'>Total Buy Out: </label>
-            <input :class="[infoInputClass]" v-model="session.totalBuyOut" type="number" />
           </div>
           <div :class="[infoDivClass]">
             <label :class="[infoLabelClass]" for='bigBlind'>Big Blind (BB): </label>
@@ -31,6 +29,17 @@
             <label :class="[infoLabelClass]" for='smallBlind'>Small Blind (SB): </label>
             <input :class="[infoInputClass]" v-model="session.smallBlind" type="number" />
           </div>
+          <div :class="[infoDivClass]">
+              <label :class="[infoLabelClass]" for='totalBuyIn'>Total Buy In: </label>
+              <p class="text-[2vw]"> {{ session.totalBuyIn }} </p>
+              <!-- <input :class="[infoInputClass]" v-model="session.totalBuyIn" type="number" /> -->
+          </div>
+          <div :class="[infoDivClass]">
+              <label :class="[infoLabelClass]" for='totalBuyOut'>Total Buy Out: </label>
+              <p class="text-[2vw]"> {{ session.totalBuyOut }} </p>
+              <!-- <input :class="[infoInputClass]" v-model="session.totalBuyOut" type="number" /> -->
+          </div>
+          <p class="text-red-500 text-[2vw]"> {{buyInErrorMessage}}</p>
         </div>
       </div>
       <div class="w-2/5 flex flex-col">
@@ -48,8 +57,10 @@
             </thead>
             <tbody>
               <tr v-for="(player, index) in players" :key="index">
+
                 <td :class="[tdInputClass]">
                   <input v-model="player.username" :class="[playerInfoThClass]" placeholder="Player Name" type="text"/>
+                  <p class="text-red-500"> {{ playerErrorMessage[index]}} </p>
                 </td>
                 <td :class="[tdInputClass]">
                   <input v-model="player.buyIn" :class="[playerInfoThClass]" placeholder="In" type="number"/>
@@ -82,9 +93,9 @@ import { defineComponent, PropType, ref, Ref, computed, onMounted, watch } from 
 import { collection, addDoc, getFirestore, doc, updateDoc, arrayUnion } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useRouter } from 'vue-router'
-import SignOutBarComponent from '../components/SignOutBarComponent.vue'
-import { Session } from '../models/sessionTypes'
-import { Player, PlayerMember } from '../models/playerTypes'
+import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
+import { Session } from '@/models/SessionTypes'
+import { Player, PlayerMember } from '@/models/PlayerTypes'
 
 export default defineComponent({
   name: 'CreateSessionPage',
@@ -107,6 +118,7 @@ export default defineComponent({
 
     const houseId = ref(props.currHouseId)
     const errorMessage = ref('')
+    const buyInErrorMessage = ref('')
     const session: Ref<Session> = ref({
       sessionId: '',
       name: '',
@@ -141,12 +153,17 @@ export default defineComponent({
       }
     }
 
+    const handleBackClick = () => {
+      router.go(-1)
+    }
+
     const infoLabelClass = "text-[2.5vw]"
     const infoInputClass = "text-[2vw] bg-[#69747C] pl-2 rounded-xl"
     const infoDivClass = "flex flex-col justify-between"
     const thClass = "text-left"
     const tdInputClass = "pt-3 pr-3"
     const playerInfoThClass = "bg-[#69747C] rounded-lg text-[1.3vw] w-full pl-1.5"
+    const playerErrorMessage: Ref<string[]> = ref([])
 
     const currUser = ref<PlayerMember>({
       username: '',
@@ -175,6 +192,10 @@ export default defineComponent({
     }
 
     const addPlayerClick = () => {
+        if(players.value.length >= 8) {
+            errorMessage.value = "Too Many Players"
+            return
+        }
       amountOfPlayers.value++
       players.value.push({
         username: '',
@@ -189,16 +210,34 @@ export default defineComponent({
     const updateValueForSubmit = async (sessionId: string) => {
       try {
         const sessionDocRef = doc(db, 'session_ids', sessionId)
+        const houseDocRef = doc(db, 'house_ids', props.currHouseId)
         const userDocRef = doc(db, 'users', currUser.value.uid)
 
         await updateDoc(userDocRef, {
           sessionsHosted: arrayUnion(sessionId),
           sessionsHostedRef: arrayUnion(sessionDocRef)
         })
+
+        await updateDoc(sessionDocRef, {
+            sessionId: sessionId
+        })
+
+        await updateDoc(houseDocRef, {
+            sessionsIds: arrayUnion(sessionId),
+            sessionsIdsRef: arrayUnion(sessionDocRef),
+        })
+
       } catch (error) {
         console.error('Error updating values:', error)
         errorMessage.value = 'Failed to update session details'
       }
+    }
+
+
+    const updateAllPlayerMembers = async (players: Player[]) => {
+        console.log(players)
+
+
     }
 
     const addSessionToDB = async (newSession: Session) => {
@@ -207,14 +246,13 @@ export default defineComponent({
         newSession.sessionId = docRef.id
         errorMessage.value = ''
         await updateValueForSubmit(docRef.id)
-        router.push({ name: 'SessionDetails', params: { sessionId: docRef.id } })
       } catch (error) {
         console.error('Error adding session:', error)
         errorMessage.value = 'Failed to submit session'
       }
     }
 
-    const submitClick = () => {
+    const submitClick = async () => {
       if (!session.value.date ||
           session.value.totalBuyIn === 0 ||
           session.value.totalBuyOut === 0 ||
@@ -236,23 +274,46 @@ export default defineComponent({
 
       session.value.players = [...players.value]
       session.value.parentHouseId = props.currHouseId
-      addSessionToDB(session.value)
+      await addSessionToDB(session.value)
+      router.push({ name: 'HousePage', params: {houseId: props.currHouseId}})
     }
 
     const fetchPlayerMember = async (uid: string) => {
       try {
         const userDocRef = doc(db, 'users', uid)
-        // Add your fetch logic here
+        // more work here
       } catch (error) {
         console.error('Error fetching player:', error)
       }
     }
+
+
+    const updateBuyInBuyOut = (newPlayers: Player[]) => {
+      let buyInSum = 0
+      let buyOutSum = 0
+      for( const player of newPlayers ){
+        buyInSum += player.buyIn
+        buyOutSum += player.buyOut
+      }
+
+      session.value.totalBuyIn = buyInSum
+      session.value.totalBuyOut = buyOutSum
+      if(buyInSum !== buyOutSum) {
+        buyInErrorMessage.value = "Buy In and Buy Out don't match"
+
+      } else {
+        buyInErrorMessage.value = ''
+
+      }
+    }
+
 
     onMounted(() => {
       onAuthStateChanged(auth, (user) => {
         if (user?.uid) {
           currUser.value.uid = user.uid
           fetchPlayerMember(user.uid)
+          updateBuyInBuyOut(players.value)
         } else {
           router.push({ name: "AccountPage" })
         }
@@ -260,7 +321,20 @@ export default defineComponent({
     })
 
     watch(players, (newPlayers) => {
+      newPlayers.forEach((player, index) => {
+            playerErrorMessage.value[index] = "";
+            newPlayers.some((player2, index2) => {
+                if (player.username === player2.username && index !== index2 && player.username !== '') {
+                    playerErrorMessage.value[index] = "can't have duplicated";
+                    return true;
+                }
+                return false;
+            });
+        });
+
+
       session.value.players = [...newPlayers]
+      updateBuyInBuyOut(newPlayers)
     }, { deep: true })
 
     return {
@@ -279,7 +353,10 @@ export default defineComponent({
       players,
       houseId,
       handleLoggedInChange,
-      pageRouteName // Make sure to return the pageRouteName
+      pageRouteName,
+      playerErrorMessage,
+      buyInErrorMessage,
+      handleBackClick
     }
   }
 })

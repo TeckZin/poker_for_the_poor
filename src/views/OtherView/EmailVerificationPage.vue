@@ -12,7 +12,7 @@
 import { defineComponent, ref, onMounted, onUpdated } from 'vue'
 import { getFirestore, collection, getDocs, doc, Firestore, getDoc, setDoc, DocumentReference } from "firebase/firestore";
 import { getAuth, User, onAuthStateChanged } from 'firebase/auth';
-import { Player, PlayerMember } from '../models/playerTypes'
+import { Player, PlayerMember } from '@/models/PlayerTypes'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({

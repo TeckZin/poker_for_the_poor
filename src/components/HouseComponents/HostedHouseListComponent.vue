@@ -29,8 +29,8 @@ import { defineComponent, ref, onMounted, Ref, PropType, watch } from 'vue'
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, doc, getDoc, DocumentReference, getDocs } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
-import { House } from '../models/houseTypes'
-import { PlayerMember } from '../models/playerTypes'
+import { House } from '@/models/HouseTypes'
+import { PlayerMember } from '@/models/PlayerTypes'
 
 export default defineComponent({
   components: {

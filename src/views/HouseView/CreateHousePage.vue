@@ -1,13 +1,9 @@
-
 <template>
-
     <div class="flex flex-col font-bebas-neue ml-5">
             <div class="flex flex-row justify-between mt-3">
                 <p class="text-[2.5vw]"> New House Game  </p>
                 <SignOutBarComponent
                         class="mr-7"
-                        @is-logged-in="handleLoggedInChange"
-                        :pageRouteName="CreateHousePage"
                         > </SignOutBarComponent>
             </div>
             <div class="text-[2.5vw] flex flex-col items-center">
@@ -58,8 +54,8 @@ import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { collection, addDoc, getFirestore, doc, updateDoc, arrayUnion} from 'firebase/firestore';
 import { useRouter } from 'vue-router'
-import { House } from '../models/houseTypes'
-import SignOutBarComponent from '../components/SignOutBarComponent.vue'
+import { House } from '@/models/HouseTypes'
+import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
 
 export default defineComponent({
   components: {
@@ -83,6 +79,7 @@ export default defineComponent({
           houseId: '',
           hostUid: userUid.value,
           sessionsIds: [],
+          sessionsIdsRef: [],
           totalPlayers: 0,
           totalBuyIn: 0,
           name: '',

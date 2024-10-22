@@ -5,7 +5,6 @@
       <div  class="text-[2vw] text-button-text-color">
           <SignOutBarComponent
                   @is-logged-in="handleLoggedInChnage"
-                  :pageRouteName="AccountPage"
                   > </SignOutBarComponent>
       </div>
     </div>
@@ -17,8 +16,8 @@
 import { defineComponent, ref, onMounted, onUpdated } from 'vue'
 import { getAuth, User, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'vue-router'
-import InputComponent from '../components/InputComponent.vue'
-import SignOutBarComponent from '../components/SignOutBarComponent.vue'
+import InputComponent from '@/components/HomeComponents/InputComponent.vue'
+import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
 
 export default defineComponent({
   components: {

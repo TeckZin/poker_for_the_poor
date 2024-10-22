@@ -52,10 +52,6 @@ export default defineComponent({
 
   },
   props: {
-    pageRouteName: {
-        type: String,
-        required: true
-    }
   },
   name: 'AccountSignUpComponent',
   setup(props, {emit}) {
@@ -87,7 +83,7 @@ export default defineComponent({
                     router.push({ name: "EmailVerificationPage"})
 
                 } else {
-                    router.push({ name: props.pageRouteName })
+                    router.go(-1)
 
                 }
 

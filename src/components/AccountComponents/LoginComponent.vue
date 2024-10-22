@@ -32,10 +32,6 @@ export default defineComponent({
   components: {
   },
   props: {
-    pageRouteName: {
-        type: String,
-        required: true
-    }
   },
   name: 'AccountLoginComponent',
   emit: ['type-change'],
@@ -67,8 +63,7 @@ export default defineComponent({
                     router.push({ name: "EmailVerificationPage"})
 
                 } else {
-                    router.push({ name: props.pageRouteName })
-
+                    router.go(-1)
                 }
 
             }
@@ -84,7 +79,7 @@ export default defineComponent({
         }
         signInWithEmailAndPassword(auth, email.value, password.value).then((data) => {
             user.value = data.user
-            router.push({ name: props.pageRouteName })
+            router.go(-1)
         }).catch((err) => {
             switch(err.code) {
 
