@@ -1,29 +1,38 @@
+import { DocumentReference } from 'firebase/firestore';
+
 export interface Player {
-  name: string;
+  username: string;
   buyIn: number;
   buyOut: number;
   member: boolean;
   uid: string | null ;
+  playerRef: DocumentReference | null;
 }
 
 
 
 export interface PlayerMember {
-  name: string;
+  username: string;
   email: string;
   buyIn: number;
   buyOut: number;
   uid: string;
+
   houseGamesPlayedIds: string[];
   sessionsPlayedIds: string[];
   houseGamesHosted: string[];
   sessionsHosted: string[];
 
+  houseGamesPlayedIdsRef: DocumentReference[];
+  sessionsPlayedIdsRef: DocumentReference[];
+  houseGamesHostedRef: DocumentReference[];
+  sessionsHostedRef: DocumentReference[];
+
 }
 
 export function createEmptyPlayerMember(): PlayerMember {
   return {
-    name: '',
+    username: '',
     email: '',
     buyIn: 0,
     buyOut: 0,
@@ -31,26 +40,21 @@ export function createEmptyPlayerMember(): PlayerMember {
     houseGamesPlayedIds: [],
     sessionsPlayedIds: [],
     houseGamesHosted: [],
-    sessionsHosted: []
+    sessionsHosted: [],
+    houseGamesPlayedIdsRef: [],
+    sessionsPlayedIdsRef: [],
+    houseGamesHostedRef: [],
+    sessionsHostedRef: []
   };
 }
 
-export function convertPlayerMemberToPlayer(playerMember: PlayerMember): Player {
-  return {
-    name: playerMember.name,
-    buyIn: playerMember.buyIn,
-    buyOut: playerMember.buyOut,
-    member: true,
-    uid: playerMember.uid
-  };
-}
 
 export function convertPlayerToPlayerMember(player: Player): PlayerMember {
   if (!player.uid) {
     throw new Error("Cannot convert Player to PlayerMember: uid is null");
   }
   return {
-    name: player.name,
+    username: player.username,
     buyIn: player.buyIn,
     buyOut: player.buyOut,
     uid: player.uid,
@@ -58,6 +62,10 @@ export function convertPlayerToPlayerMember(player: Player): PlayerMember {
     houseGamesPlayedIds: [],
     sessionsPlayedIds: [],
     houseGamesHosted: [],
-    sessionsHosted: []
+    sessionsHosted: [],
+    houseGamesPlayedIdsRef: [],
+    sessionsPlayedIdsRef: [],
+    houseGamesHostedRef: [],
+    sessionsHostedRef: []
   };
 }

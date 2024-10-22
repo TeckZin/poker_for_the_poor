@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUpdated } from 'vue'
-import { getFirestore, collection, getDocs, doc, Firestore, getDoc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, Firestore, getDoc, setDoc, DocumentReference } from "firebase/firestore";
 import { getAuth, User, onAuthStateChanged } from 'firebase/auth';
 import { Player, PlayerMember } from '../models/playerTypes'
 import { useRouter } from 'vue-router'
@@ -60,7 +60,7 @@ export default defineComponent({
                      const flag = await checkUserExists(user.uid)
                      if (!flag) {
                         const userPlayer: PlayerMember = {
-                            name: '',
+                            username: '',
                             buyIn: 0,
                             buyOut: 0,
                             uid: user.uid?.toString() || '',
@@ -68,7 +68,11 @@ export default defineComponent({
                             houseGamesPlayedIds: [] as string[],
                             sessionsPlayedIds: [] as string[],
                             houseGamesHosted: [] as string[],
-                            sessionsHosted: [] as string[]
+                            sessionsHosted: [] as string[],
+                            houseGamesPlayedIdsRef: [] as DocumentReference[],
+                            sessionsPlayedIdsRef: [] as DocumentReference[],
+                            houseGamesHostedRef: [] as DocumentReference[],
+                            sessionsHostedRef: [] as DocumentReference[]
                         }
 
                         addUserToFirestore(userPlayer)

@@ -1,5 +1,5 @@
 import { Player } from './playerTypes'
-
+import { DocumentReference } from 'firebase/firestore';
 
 export interface Session {
   sessionId: string;
@@ -10,8 +10,10 @@ export interface Session {
   totalBuyOut: number;
   bigBlind: number;
   smallBlind: number;
-  parentHostId: string;
+  parentHouseId: string;
+  parentHouseIdRef: DocumentReference | null;
   hostUid: string;
+  hostUidRef: DocumentReference | null;
 }
 
 export interface Sessions {

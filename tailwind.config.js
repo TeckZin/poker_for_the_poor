@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+
+const plugin = require('tailwindcss/plugin');
 module.exports = {
   content: [
         "./index.html",
@@ -13,10 +16,20 @@ module.exports = {
         },
         fontFamily: {
             'bebas-neue': ['"Bebas Neue"', 'cursive'],
+            'ibm-plex-mono': ['"IBM Plex Mono"', 'bold'],
         },
 
     },
   },
-  plugins: [],
+     plugins: [
+        plugin(function ({ addUtilities }) {
+          addUtilities({
+            '.button-custom-hover-class': {
+              '@apply hover:border-4 hover:border-white transition-all duration-300': {}
+            },
+          })
+        })
+      ],
 }
+
 

@@ -6,6 +6,8 @@ import LoginSignUpPage from '@/views/LoginSignUpPage.vue'
 import AccountPage from '@/views/AccountPage.vue'
 import NotFoundPage from '@/views/NotFoundPage.vue'
 import EmailVerificationPage from '@/views/EmailVerificationPage.vue'
+import CreateHousePage from '@/views/CreateHousePage.vue'
+import CreateSessionPage from '@/views/CreateSessionPage.vue'
 
 
 // import About from '@/views/About.vue'
@@ -18,7 +20,20 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/house-page/:houseId',
     name: 'HousePage',
-    component: HousePage
+    component: HousePage,
+    props: true
+  },
+  {
+    path: '/house-page/:userId/create',
+    name: 'CreateHousePage',
+    component: CreateHousePage,
+    props: true
+  },
+  {
+    path: '/session-page/create/:currHouseId',
+    name: 'CreateSessionPage',
+    component: CreateSessionPage,
+    props: true
   },
   {
     path: '/account/:accountActionType',

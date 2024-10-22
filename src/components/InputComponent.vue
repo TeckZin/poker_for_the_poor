@@ -23,7 +23,10 @@
                           >JOIN</button>
               </div>
           </div>
-          <input class='text-[0.75em] text-[#FCF0CC]
+          <input
+            @keyup.enter="handleJoinHouse"
+          class='text-[0.75em] text-[#FCF0CC]
+          font-ibm-plex-mono
           rounded-xl bg-[#545454] border-2
           outline-none p-2 border-white'
                  v-model="houseId"

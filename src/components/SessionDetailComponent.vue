@@ -1,6 +1,6 @@
 <template>
   <div class="flex text-[3vh] w-full h-full">
-    <div class="w-1/4 h-full" v-if="session">
+    <div class="w-full h-full" v-if="session">
       <p>session id: {{ session.sessionId }}</p>
       <p>session name: {{ session.mame }}</p>
       <p>session date: {{ session.date }}</p>
@@ -22,8 +22,10 @@
           </tr>
         </tbody>
       </table>
-      <div v-if="isLoggedIn" class="flex justify-start text-button-text-color">
-          <button>EDIT</button>
+      <div v-if="isLoggedIn" class="flex flex-row justify-evenly
+                  text-button-text-color">
+          <button :class="[buttonClass, 'px-4 py-1.5']" >EDIT</button>
+          <button :class="[buttonClass, 'px-3 py-2']">VIEW MORE</button>
       </div>
     </div>
     <div v-else class="w-full h-full flex items-center justify-center">
@@ -52,11 +54,13 @@ export default defineComponent({
   },
   setup(props) {
     const thClass = ref("text-left")
+    const buttonClass = "button-custom-hover-class text-[2vw]"
 
 
 
     return {
       thClass,
+      buttonClass,
     }
   }
 })
