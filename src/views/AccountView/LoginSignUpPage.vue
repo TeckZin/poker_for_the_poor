@@ -38,7 +38,6 @@ export default defineComponent({
     const pageRouteName = ref("AccountPage")
 
     const handleAccChange = (value: string) => {
-        console.log(value)
         accountActionType.value = value
     }
 

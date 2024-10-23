@@ -1,6 +1,28 @@
 
 <template>
     <div>
+        <ul>
+            <li class="text-[1.5vw] border border-white flex flex-row justify-between" v-for="session in sessions" :key="session.sessionId">
+                <div flex="flex flex-col">
+                <div :class="[divListClass]">
+                    <p :class="[pListClass]" > Name: </p>
+                    <p :class="[pListClass, 'mx-2']"> {{session.name}} </p>
+                    <p :class="[pListClass]"> Date: </p>
+                    <p :class="[pListClass, 'mx-2']"> {{session.date}} </p>
+                </div>
+                <div :class="[divListClass]">
+                    <p :class="[pListClass]"> Session ID: </p>
+                    <p :class="[pListClass]"> {{session.sessionId}} </p>
+                </div>
+                </div>
+                <button class="text-button-text-color mr-4"
+                        @click="handleViewMoreClick(session)"
+
+                    > View More </button>
+
+            </li>
+
+        </ul>
     </div>
 </template>
 
@@ -32,6 +54,17 @@ export default defineComponent({
         const router = useRouter()
 
         const sessions: Ref<Session[]> = ref([])
+
+
+        const divListClass = 'flex flex-row'
+        const pListClass = 'mx-4'
+
+
+        const handleViewMoreClick = (session: Session) => {
+            router.push({name: 'SessionDetailPage', params:{sessionId: session.sessionId}})
+
+
+        }
 
         const getSession = async (sessionRef: DocumentReference): Promise<Session | null> => {
             try {
@@ -71,6 +104,9 @@ export default defineComponent({
 
         return {
             sessions,
+            divListClass,
+            pListClass,
+            handleViewMoreClick
 
 
         }

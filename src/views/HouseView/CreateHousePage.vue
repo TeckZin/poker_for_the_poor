@@ -110,7 +110,7 @@ export default defineComponent({
     }
 
     const handleSubmitClick =  async () => {
-        console.log(newHouse.value)
+
 
         if(!newHouse.value.locationValue || !newHouse.value.discription || !newHouse.value.name) {
             errMessage.value = "fill all box"
@@ -159,7 +159,7 @@ export default defineComponent({
                 newHouse.value
             ).then((data) => {
                 newHouseId.value = data.id
-                console.log(newHouseId.value)
+
                 errMessage.value = ''
                 updateUserHostedGame()
 
@@ -178,11 +178,11 @@ export default defineComponent({
     onMounted(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log(user)
+
                 if (user.uid) {
                     userUid.value = user.uid
                 }
-                console.log(user.uid)
+
 
             } else {
 

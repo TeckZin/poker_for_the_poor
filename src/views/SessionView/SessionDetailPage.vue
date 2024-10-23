@@ -82,7 +82,7 @@ export default defineComponent({
     const isLoggedIn = ref(false)
 
 
-    const thClass = "text-left"
+    const thClass = ref("text-left")
 
 
     const handleLoggedInChange = (value: boolean) => {

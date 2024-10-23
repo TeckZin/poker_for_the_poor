@@ -124,7 +124,7 @@ export default defineComponent({
 
     onMounted(() => {
         onAuthStateChanged(auth, async (user) => {
-            console.log(user)
+
             if (user) {
               if (!user.emailVerified) {
                 router.push({ name: "EmailVerificationPage" });
@@ -137,7 +137,7 @@ export default defineComponent({
 
               if (userDocSnap.exists()) {
                 const userData = userDocSnap.data();
-                console.log(userData)
+
                 currUserPlayer.value = {
                   username: userData.username  || '',
                   email: userData.email || '',

@@ -92,7 +92,6 @@ export default defineComponent({
     const pageRouteName = ref('HousePage')
 
     const onCreateClick = () => {
-      console.log('Navigating to CreateSessionPage with houseId:', houseId.value)
       router.push({ name: "CreateSessionPage", params: { currHouseId: houseId.value } })
     }
     const viewMoreClick = (session: Session): void => {
@@ -112,10 +111,10 @@ export default defineComponent({
             ...rawData.data(),
             houseId: rawData.id
           } as House;
-          console.log(currentHouse.value);
+          (currentHouse.value);
           return fetchSessions(db, currentHouse.value.sessionsIds ?? '')
         } else {
-          console.log('No such document!');
+          ('No such document!');
           currentHouse.value = null;
         }
       }).catch((err) => {

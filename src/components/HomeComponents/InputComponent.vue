@@ -106,7 +106,6 @@ export default defineComponent({
                         this.$router.push({ name: 'HousePage', params: { houseId: this.houseId} })
                         return
                     } else {
-                        console.log("No such document!");
                         this.errorFlag = true
                         this.errorMessage = 'House ID Does Not Exist'
                         return

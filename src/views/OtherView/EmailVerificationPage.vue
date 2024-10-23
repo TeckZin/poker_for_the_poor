@@ -27,6 +27,7 @@ export default defineComponent({
     const auth = getAuth()
     const db = getFirestore();
     const router = useRouter()
+    const errorMessage = ref('')
 
 
     const checkUserExists = async (uid: string): Promise<boolean>  => {
@@ -40,11 +41,10 @@ export default defineComponent({
         const userRef = doc(db, 'users', userPlayer.uid)
 
         setDoc(userRef, userPlayer).then((data) => {
-            console.log('added')
+            errorMessage.value = ''
+
         }).catch((err) => {
-            console.log(err)
-
-
+            errorMessage.value = err.message
         })
 
 
@@ -56,7 +56,7 @@ export default defineComponent({
                 currUser.value = user
                 emailVerified.value = user.emailVerified
                 if (user.emailVerified) {
-                     console.log(user.uid)
+
                      const flag = await checkUserExists(user.uid)
                      if (!flag) {
                         const userPlayer: PlayerMember = {
