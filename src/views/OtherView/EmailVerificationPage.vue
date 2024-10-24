@@ -10,7 +10,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUpdated } from 'vue'
-import { getFirestore, collection, getDocs, doc, Firestore, getDoc, setDoc, DocumentReference } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, Firestore, getDoc, setDoc, DocumentReference,
+DocumentSnapshot, QuerySnapshot} from "firebase/firestore";
 import { getAuth, User, onAuthStateChanged } from 'firebase/auth';
 import { Player, PlayerMember } from '@/models/PlayerTypes'
 import { useRouter } from 'vue-router'
@@ -30,11 +31,21 @@ export default defineComponent({
     const errorMessage = ref('')
 
 
-    const checkUserExists = async (uid: string): Promise<boolean>  => {
-        const userDocRef = doc(db,'users', uid)
-        const userDocSnap = await getDoc(userDocRef)
-        return userDocSnap.exists()
+    const checkUserExists = async (uid: string ): Promise<boolean>  => {
+        const userDocRef = doc(db, 'users', uid)
 
+        try {
+            const userDocSnap: DocumentSnapshot = await getDoc(userDocRef)
+
+            if (userDocSnap.exists()) {
+                return true
+            }
+            return false
+
+        } catch (error) {
+            console.error('Error checking user existence:', error)
+            return true
+        }
     }
 
     const addUserToFirestore = (userPlayer: PlayerMember) => {

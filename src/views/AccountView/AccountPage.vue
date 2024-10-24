@@ -1,8 +1,12 @@
 <template>
     <div class="flex flex-col font-bebas-neue">
-        <div class="flex flex-row justify-end mr-4 mt-3" >
+        <div class="flex flex-row justify-between mr-4 mt-3" >
+          <button class="text-[2.5vw] ml-6 text-button-text-color" @click="handleBackClick">
+            back
+          </button>
             <SignOutBarComponent> </SignOutBarComponent>
         </div>
+
 
         <div class="flex flex-row justify-between text-[2.5vw] mx-[4vw]">
             <div :class="[containerDivClass]">
@@ -36,6 +40,14 @@
                     <p :class="[pClass]"> Total Profit: </p>
                     <p :class="[pClass]"> {{ currUserPlayer?.buyOut - currUserPlayer?.buyIn }} </p>
                 </div>
+                <button class="text-[2vw]
+                               px-2
+                               py-3
+                        text-button-text-color button-custom-hover-class "
+                        @click="handleAccEdit"
+                    >
+                    Edit Account
+                </button>
             </div>
             <div :class="[containerDivClass]">
                 <p> Recent Sessions </p>
@@ -46,12 +58,12 @@
             <div :class="[containerDivClass]">
                 <div class="flex flex-row justify-between">
                     <p> Home Games </p>
-                    <button class="text-button-text-color text-[1.5vw]"
+                    <button class="text-button-text-color text-[1.5vw]
+                                    "
                             @click="handleHomeClick"
                         >Search public house</button>
 
                 </div>
-
                 <HostedHouseListComponent
                         :currUser="currUserPlayer"
                 > </HostedHouseListComponent>
@@ -60,6 +72,7 @@
                                button-custom-hover-class
                                px-2
                                py-3
+                               mt-5
                                 "
                         @click="createHouseClick"
                     >
@@ -109,6 +122,13 @@ export default defineComponent({
 
     const handleHomeClick = () => {
         router.push({name: "HomePage"})
+    }
+    const handleBackClick = () => {
+      router.go(-1)
+    }
+
+    const handleAccEdit = () => {
+        router.push({name: 'AccountEditPage'})
     }
 
 
@@ -184,7 +204,10 @@ export default defineComponent({
         containerDivClass,
          createHouseClick,
          currUserPlayer,
-         handleHomeClick
+         handleHomeClick,
+         handleBackClick,
+         handleAccEdit
+
 
 
     }

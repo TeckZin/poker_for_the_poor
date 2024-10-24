@@ -10,6 +10,7 @@ import CreateHousePage from '@/views/HouseView/CreateHousePage.vue'
 import CreateSessionPage from '@/views/SessionView/CreateSessionPage.vue'
 import EditSessionPage from '@/views/SessionView/EditSessionPage.vue'
 import SessionDetailPage from '@/views/SessionView/SessionDetailPage.vue'
+import AccountEditPage from '@/views/AccountView/AccountEditPage.vue'
 
 
 // import About from '@/views/About.vue'
@@ -29,13 +30,19 @@ const routes: Array<RouteRecordRaw> = [
     path: '/house-page/create',
     name: 'CreateHousePage',
     component: CreateHousePage,
-    props: true
+    props: true,
+    meta: {
+        requiresAuth: true,
+    }
   },
   {
     path: '/session-page/create/:currHouseId',
     name: 'CreateSessionPage',
     component: CreateSessionPage,
-    props: true
+    props: true,
+    meta: {
+        requiresAuth: true,
+    }
   },
   {
     path: '/session-page/view/:sessionId',
@@ -47,7 +54,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/session-page/edit/:sessionId',
     name: 'EditSessionPage',
     component: EditSessionPage,
-    props: true
+    props: true,
+    meta: {
+        requiresAuth: true,
+    }
   },
   {
     path: '/account/:accountActionType',
@@ -57,13 +67,23 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/acccount/email-verified',
     name: 'EmailVerificationPage',
-    component: EmailVerificationPage
+    component: EmailVerificationPage,
+    meta: {
+        requiresAuth: true,
+    }
   },
-
   {
     path: '/account/info',
     name: 'AccountPage',
     component: AccountPage,
+    meta: {
+        requiresAuth: true,
+    }
+  },
+  {
+    path: '/account/info/edit',
+    name: 'AccountEditPage',
+    component: AccountEditPage,
     meta: {
         requiresAuth: true,
     }
