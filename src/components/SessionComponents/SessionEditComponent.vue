@@ -208,7 +208,6 @@ export default defineComponent({
 
     })
 
-    console.log(props.sessionId)
 
     const handleLoggedInChange = (isLoggedIn: boolean) => {
       if (!isLoggedIn) {
@@ -369,7 +368,6 @@ export default defineComponent({
           session.value.players = [...players.value]
           session.value.parentHouseId = props.houseId ?? ''
 
-          console.log(props.houseId)
           try {
             const docRef = await addDoc(collection(db, 'session_ids'), session.value)
             session.value.sessionId = docRef.id
@@ -388,7 +386,6 @@ export default defineComponent({
         if(!props.houseId) {
             return
         }
-        console.log(props.houseId)
         const sessionDocRef = doc(db, 'session_ids', sessionId)
         const houseDocRef = doc(db, 'house_ids', props.houseId)
         const userDocRef = doc(db, 'users', currUser.value.uid)
@@ -447,7 +444,6 @@ export default defineComponent({
 
    const updatePlayerMembers = async () => {
 
-        console.log('pass test 1')
         const playerList = session.value.players.filter((player) => player.member && player.uid);
         let playerMembers: PlayerMember[] = [];
 
@@ -477,9 +473,6 @@ export default defineComponent({
             }
         }
 
-        console.log('pass test 2')
-
-        console.log(session.value)
 
         const sessionDocRef = doc(db, 'session_ids', session.value.sessionId)
 
@@ -488,7 +481,6 @@ export default defineComponent({
 
 
 
-        console.log('pass test 3')
 
 
         if (playerMembers.length) {
@@ -509,7 +501,6 @@ export default defineComponent({
             }
 
         }
-        console.log('pass test 4')
 
     };
 
