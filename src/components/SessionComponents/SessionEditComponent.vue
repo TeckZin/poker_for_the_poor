@@ -124,8 +124,8 @@ import { collection, addDoc, getDoc, getFirestore, doc, updateDoc, arrayUnion,Do
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useRouter } from 'vue-router'
 import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
-import { Session } from '@/models/SessionTypes'
-import { Player, PlayerMember } from '@/models/PlayerTypes'
+import { Session, createEmptySession } from '@/models/SessionTypes'
+import { Player, PlayerMember, createEmptyPlayerMember, createEmptyPlayers } from '@/models/PlayerTypes'
 
 export default defineComponent({
   name: 'SessionEditComponent',
@@ -156,30 +156,8 @@ export default defineComponent({
     const buyInErrorMessage = ref('')
 
     const amountOfPlayers: Ref<number> = ref(2)
-    const players: Ref<Player[]> = ref(
-      Array(amountOfPlayers.value).fill(null).map(() => ({
-        username: '',
-        buyIn: 0,
-        buyOut: 0,
-        member: false,
-        uid: '',
-        playerRef: null
-      }))
-    )
-    const session: Ref<Session> = ref({
-      sessionId: '',
-      name: '',
-      date: '',
-      players: [],
-      totalBuyIn: 0,
-      totalBuyOut: 0,
-      bigBlind: 0,
-      smallBlind: 0,
-      parentHouseId: '',
-      parentHouseIdRef: null,
-      hostUid: props.houseId ?? '',
-      hostUidRef: null,
-    })
+    const players: Ref<Player[]> = ref(createEmptyPlayers(amountOfPlayers.value))
+    const session: Ref<Session> = ref(createEmptySession())
 
 
 
@@ -191,22 +169,7 @@ export default defineComponent({
     const playerInfoThClass = "bg-[#69747C] rounded-lg text-[1.3vw] w-full pl-1.5"
     const playerErrorMessages: Ref<string[]> = ref([])
 
-    const currUser = ref<PlayerMember>({
-      username: '',
-      email: '',
-      buyIn: 0,
-      buyOut: 0,
-      uid: '',
-      houseGamesPlayedIds: [],
-      sessionsPlayedIds: [],
-      houseGamesHosted: [],
-      sessionsHosted: [],
-      houseGamesPlayedIdsRef: [],
-      sessionsPlayedIdsRef: [],
-      houseGamesHostedRef: [],
-      sessionsHostedRef: []
-
-    })
+    const currUser = ref<PlayerMember>(createEmptyPlayerMember())
 
 
     const handleLoggedInChange = (isLoggedIn: boolean) => {
@@ -566,20 +529,7 @@ export default defineComponent({
 
     watch(() => props.sessionId, async (newSessionId) => {
       if (!newSessionId) {
-        session.value  = {
-          sessionId: '',
-          name: '',
-          date: '',
-          players: [],
-          totalBuyIn: 0,
-          totalBuyOut: 0,
-          bigBlind: 0,
-          smallBlind: 0,
-          parentHouseId: '',
-          parentHouseIdRef: null,
-          hostUid: props.houseId ?? '',
-          hostUidRef: null,
-        }
+        session.value  = createEmptySession()
 
         return
       }

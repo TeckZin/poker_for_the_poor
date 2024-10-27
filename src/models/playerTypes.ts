@@ -48,6 +48,25 @@ export function createEmptyPlayerMember(): PlayerMember {
   };
 }
 
+export const createEmptyPlayer = (): Player => {
+    return {
+        username: '',
+        buyIn: 0,
+        buyOut: 0,
+        member: false,
+        uid: null,
+        playerRef: null
+    };
+};
+
+export const createEmptyPlayers = (count: number): Player[] => {
+    return Array(count).fill(null).map(() => createEmptyPlayer());
+};
+
+export const createEmptyPlayerMembers = (count: number): PlayerMember[] => {
+    return Array(count).fill(null).map(() => createEmptyPlayerMember());
+};
+
 
 export function convertPlayerToPlayerMember(player: Player): PlayerMember {
   if (!player.uid) {

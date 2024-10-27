@@ -90,7 +90,7 @@ import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { useRouter } from 'vue-router'
 import { House } from '@/models/HouseTypes'
-import {PlayerMember} from '@/models/PlayerTypes'
+import {PlayerMember, createEmptyPlayerMember,  createEmptyPlayer} from '@/models/PlayerTypes'
 import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
 import HostedHouseListComponent from '@/components/HouseComponents/HostedHouseListComponent.vue'
 import SessionsPlayedListComponent from '@/components/SessionComponents/SessionsPlayedListComponent.vue'
@@ -116,21 +116,7 @@ export default defineComponent({
     const auth = getAuth();
     const db = getFirestore()
 
-    const currUserPlayer = ref<PlayerMember>({
-      username:'',
-      email: '',
-      buyIn:  0,
-      buyOut:  0,
-      uid: '',
-      houseGamesPlayedIds:  [],
-      sessionsPlayedIds:  [],
-      houseGamesHosted:  [],
-      sessionsHosted:  [],
-      houseGamesPlayedIdsRef:  [],
-      sessionsPlayedIdsRef:  [],
-      houseGamesHostedRef:  [],
-      sessionsHostedRef:  []
-    });
+    const currUserPlayer = ref<PlayerMember>(createEmptyPlayerMember());
 
 
     const handleHomeClick = () => {
@@ -170,56 +156,15 @@ export default defineComponent({
 
               if (userDocSnap.exists()) {
                 const userData = userDocSnap.data();
+                currUserPlayer.value  = userData as PlayerMember
 
-                currUserPlayer.value = {
-                  username: userData.username  || '',
-                  email: userData.email || '',
-                  buyIn: userData.buyIn || 0,
-                  buyOut: userData.buyOut || 0,
-                  uid: userData.uid,
-                  houseGamesPlayedIds: userData.houseGamesPlayedIds || [],
-                  sessionsPlayedIds: userData.sessionsPlayedIds || [],
-                  houseGamesHosted: userData.houseGamesHosted || [],
-                  sessionsHosted: userData.sessionsHosted || [],
-                  houseGamesPlayedIdsRef: userData.houseGamesPlayedIdsRef || [],
-                  sessionsPlayedIdsRef: userData.sessionsPlayedIdsRef || [],
-                  houseGamesHostedRef: userData.houseGamesHostedRef || [],
-                  sessionsHostedRef: userData.sessionsHostedRef || []
-                };
+
               } else {
                 // If the user document doesn't exist, create a new PlayerMember object
-                currUserPlayer.value = {
-                  username: '',
-                  email: user.email || '',
-                  buyIn: 0,
-                  buyOut: 0,
-                  uid: '',
-                  houseGamesPlayedIds: [],
-                  sessionsPlayedIds: [],
-                  houseGamesHosted: [],
-                  sessionsHosted: [],
-                  houseGamesPlayedIdsRef: [],
-                  sessionsPlayedIdsRef: [],
-                  houseGamesHostedRef: [],
-                  sessionsHostedRef: []
-                };
-              }
+                currUserPlayer.value = createEmptyPlayerMember()
+                }
             } else {
-                currUserPlayer.value = {
-                  username: '',
-                  email: '',
-                  buyIn: 0,
-                  buyOut: 0,
-                  uid: '',
-                  houseGamesPlayedIds: [],
-                  sessionsPlayedIds: [],
-                  houseGamesHosted: [],
-                  sessionsHosted: [],
-                  houseGamesPlayedIdsRef: [],
-                  sessionsPlayedIdsRef: [],
-                  houseGamesHostedRef: [],
-                  sessionsHostedRef: []
-                };
+                currUserPlayer.value = createEmptyPlayerMember()
 
 
             }

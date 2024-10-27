@@ -11,3 +11,18 @@ export interface House {
     locationValue: string;
     discription: string;
 }
+
+
+export const createEmptyHouse = (): House => {
+    return {
+        houseId: '',
+        hostUid: '',
+        sessionsIds: [],
+        sessionsIdsRef: [],
+        totalPlayers: 0,
+        totalBuyIn: 0,
+        name: '',
+        locationValue: '',
+        discription: ''
+    };
+};

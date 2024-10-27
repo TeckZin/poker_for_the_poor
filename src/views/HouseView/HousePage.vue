@@ -37,22 +37,9 @@
           <div v-if="isLoggedIn">
             <button @click="onCreateClick" class="text-[2vw] text-[#FCF0CC]"> Create New Session </button>
           </div>
-          <table class="w-full table-auto">
-            <thead class="text-[2vw] w-full">
-              <tr>
-                <th :class="[thClass]">Date</th>
-                <th :class="[thClass]">Name</th>
-                <th :class="[thClass]"><button> View </button></th>
-              </tr>
-            </thead>
-            <tbody class="text-[1.5vw] w-full">
-              <tr v-for="session in sessions" :key="session.sessionId">
-                <td>{{ session.date }}</td>
-                <td>{{ session.name }}</td>
-                <td class='text-[#FCF0CC]'> <button @click="() => viewMoreSessionClick(session)">VIEW MORE</button></td>
-              </tr>
-            </tbody>
-          </table>
+          <SessionsHouseListComponent :sessions="sessions"
+                        @selectedSession="viewMoreSessionClick"
+          > </SessionsHouseListComponent>
         </div>
       </div>
       <div v-if="!newSessionFlag" class="w-2/4 h-full">
@@ -66,16 +53,18 @@
 import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { getFirestore, collection, getDoc, doc, Firestore } from "firebase/firestore";
 import { useRoute, useRouter } from 'vue-router'
-import { Session, Sessions } from '@/models/SessionTypes'
+import { Session } from '@/models/SessionTypes'
 import { House } from '@/models/HouseTypes'
 import { Player } from '@/models/PlayerTypes'
 import SessionDetailComponent from '@/components/SessionComponents/SessionDetailComponent.vue'
 import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
+import SessionsHouseListComponent from '@/components/SessionComponents/SessionsHouseListComponent.vue'
 
 export default defineComponent({
   components: {
     SessionDetailComponent,
     SignOutBarComponent,
+    SessionsHouseListComponent
   },
   name: 'HousePage',
   setup() {
@@ -103,7 +92,6 @@ export default defineComponent({
 
 
     const viewMoreHouseClick = (): void => {
-        console.log(houseId)
         router.push({ name: 'ViewHousePage', params: {houseId: houseId.value}})
     }
 

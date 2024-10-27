@@ -54,7 +54,7 @@ import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { collection, addDoc, getFirestore, doc, updateDoc, arrayUnion} from 'firebase/firestore';
 import { useRouter } from 'vue-router'
-import { House } from '@/models/HouseTypes'
+import { House, createEmptyHouse } from '@/models/HouseTypes'
 import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
 
 export default defineComponent({
@@ -75,17 +75,7 @@ export default defineComponent({
     const errMessage = ref('')
     const router = useRouter()
     const userUid = ref('')
-     const newHouse = ref<House>({
-          houseId: '',
-          hostUid: userUid.value,
-          sessionsIds: [],
-          sessionsIdsRef: [],
-          totalPlayers: 0,
-          totalBuyIn: 0,
-          name: '',
-          locationValue: '',
-          discription: '',
-        });
+     const newHouse = ref<House>(createEmptyHouse());
 
 
     const auth = getAuth()

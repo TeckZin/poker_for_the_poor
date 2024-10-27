@@ -82,7 +82,7 @@ import { defineComponent, ref, Ref, onMounted, onUpdated } from 'vue'
 import { getFirestore, collection, getDocs, doc, Firestore, getDoc, setDoc, DocumentReference,
 DocumentSnapshot, QuerySnapshot} from "firebase/firestore";
 import { getAuth, User, onAuthStateChanged } from 'firebase/auth';
-import { Player, PlayerMember } from '@/models/PlayerTypes'
+import { Player, PlayerMember, createEmptyPlayerMember } from '@/models/PlayerTypes'
 import { useRouter } from 'vue-router'
 import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
 
@@ -100,22 +100,7 @@ export default defineComponent({
 
     const errorMessage = ref('')
     const userUid = ref('')
-    const user: Ref<PlayerMember> = ref({
-      username: '',
-      email: '',
-      buyIn: 0,
-      buyOut: 0,
-      uid: '',
-      houseGamesPlayedIds: [],
-      sessionsPlayedIds: [],
-      houseGamesHosted: [],
-      sessionsHosted: [],
-      houseGamesPlayedIdsRef: [],
-      sessionsPlayedIdsRef: [],
-      houseGamesHostedRef: [],
-      sessionsHostedRef: []
-
-    })
+    const user: Ref<PlayerMember> = ref(createEmptyPlayerMember())
 
 
     const pClass = "text-[1.5vw]"
