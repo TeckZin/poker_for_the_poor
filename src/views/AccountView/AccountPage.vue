@@ -116,8 +116,21 @@ export default defineComponent({
     const auth = getAuth();
     const db = getFirestore()
 
-    const currUser = ref<User | null>(null)
-    const currUserPlayer = ref<PlayerMember | null>(null);
+    const currUserPlayer = ref<PlayerMember>({
+      username:'',
+      email: '',
+      buyIn:  0,
+      buyOut:  0,
+      uid: '',
+      houseGamesPlayedIds:  [],
+      sessionsPlayedIds:  [],
+      houseGamesHosted:  [],
+      sessionsHosted:  [],
+      houseGamesPlayedIdsRef:  [],
+      sessionsPlayedIdsRef:  [],
+      houseGamesHostedRef:  [],
+      sessionsHostedRef:  []
+    });
 
 
     const handleHomeClick = () => {
@@ -192,7 +205,23 @@ export default defineComponent({
                 };
               }
             } else {
-              currUserPlayer.value = null;
+                currUserPlayer.value = {
+                  username: '',
+                  email: '',
+                  buyIn: 0,
+                  buyOut: 0,
+                  uid: '',
+                  houseGamesPlayedIds: [],
+                  sessionsPlayedIds: [],
+                  houseGamesHosted: [],
+                  sessionsHosted: [],
+                  houseGamesPlayedIdsRef: [],
+                  sessionsPlayedIdsRef: [],
+                  houseGamesHostedRef: [],
+                  sessionsHostedRef: []
+                };
+
+
             }
         })
     })

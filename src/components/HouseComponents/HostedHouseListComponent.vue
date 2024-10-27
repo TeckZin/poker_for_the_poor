@@ -49,7 +49,7 @@ export default defineComponent({
         const db = getFirestore()
         const router = useRouter()
 
-        const liClass = "flex flex-row justify-between text-[1.5vw] border border-white "
+        const liClass = "flex flex-row justify-between text-[1.5vw] border border-white mb-5"
         const liDivClass = "flex flex-row"
 
         const handleViewMoreClick = (house: House) => {

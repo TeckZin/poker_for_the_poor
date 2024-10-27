@@ -2,7 +2,7 @@
 <template>
     <div>
         <ul>
-            <li class="text-[1.5vw] border border-white flex flex-row justify-between" v-for="session in sessions" :key="session.sessionId">
+            <li class="text-[1.5vw] border border-white flex flex-row justify-between mb-5" v-for="session in sessions" :key="session.sessionId">
                 <div flex="flex flex-col">
                 <div :class="[divListClass]">
                     <p :class="[pListClass]" > Name: </p>

@@ -11,6 +11,7 @@ import CreateSessionPage from '@/views/SessionView/CreateSessionPage.vue'
 import EditSessionPage from '@/views/SessionView/EditSessionPage.vue'
 import SessionDetailPage from '@/views/SessionView/SessionDetailPage.vue'
 import AccountEditPage from '@/views/AccountView/AccountEditPage.vue'
+import ViewHousePage from '@/views/HouseView/ViewHousePage.vue'
 
 
 // import About from '@/views/About.vue'
@@ -24,6 +25,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/house-page/:houseId',
     name: 'HousePage',
     component: HousePage,
+    props: true
+  },
+  {
+    path: '/house-page/view/:houseId',
+    name: 'ViewHousePage',
+    component: ViewHousePage,
     props: true
   },
   {

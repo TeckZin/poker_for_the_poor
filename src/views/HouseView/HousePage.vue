@@ -27,6 +27,9 @@
                 <p :class="[housePClass]"> Host UID:  </p>
                 <p :class="[housePClass]"> {{ currentHouse?.hostUid}} </p>
             </div>
+                <button
+                        class="text-[2vw] text-button-text-color"
+                    @click="() => viewMoreHouseClick()">VIEW MORE</button>
         </div>
       <div class="w-1/4">
         <div>
@@ -46,7 +49,7 @@
               <tr v-for="session in sessions" :key="session.sessionId">
                 <td>{{ session.date }}</td>
                 <td>{{ session.name }}</td>
-                <td class='text-[#FCF0CC]'> <button @click="() => viewMoreClick(session)">VIEW MORE</button></td>
+                <td class='text-[#FCF0CC]'> <button @click="() => viewMoreSessionClick(session)">VIEW MORE</button></td>
               </tr>
             </tbody>
           </table>
@@ -94,8 +97,14 @@ export default defineComponent({
     const onCreateClick = () => {
       router.push({ name: "CreateSessionPage", params: { currHouseId: houseId.value } })
     }
-    const viewMoreClick = (session: Session): void => {
+    const viewMoreSessionClick = (session: Session): void => {
       selectedSession.value = session
+    }
+
+
+    const viewMoreHouseClick = (): void => {
+        console.log(houseId)
+        router.push({ name: 'ViewHousePage', params: {houseId: houseId.value}})
     }
 
     const onCreateBackClick = () =>  {
@@ -163,7 +172,6 @@ export default defineComponent({
     });
 
     const handleLoggedInChange = (value: boolean) => {
-
       isLoggedIn.value = value
     }
 
@@ -176,7 +184,8 @@ export default defineComponent({
       isLoggedIn,
       handleLoggedInChange,
       onCreateClick,
-      viewMoreClick,
+      viewMoreSessionClick,
+      viewMoreHouseClick,
       onCreateBackClick,
       currentHouse,
       houseDivClass,
