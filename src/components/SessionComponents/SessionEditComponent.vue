@@ -205,7 +205,10 @@ export default defineComponent({
       sessionsPlayedIdsRef: [],
       houseGamesHostedRef: [],
       sessionsHostedRef: []
+
     })
+
+    console.log(props.sessionId)
 
     const handleLoggedInChange = (isLoggedIn: boolean) => {
       if (!isLoggedIn) {
@@ -253,6 +256,9 @@ export default defineComponent({
       const totalBuyIn = players.value.reduce((sum, player) => sum + (player.buyIn || 0), 0)
       const totalBuyOut = players.value.reduce((sum, player) => sum + (player.buyOut || 0), 0)
 
+      if (totalBuyIn !== totalBuyOut) {
+        buyInErrorMessage.value = 'Total buy-in and buy-out amounts do not match'
+      }
 
       if (totalBuyIn !== session.value?.totalBuyIn) {
         buyInErrorMessage.value = 'Total buy-in amounts do not match'
@@ -309,16 +315,27 @@ export default defineComponent({
           if (!props.sessionId) {
             return
           }
+        session.value.sessionId = props.sessionId
         const sessionRef = doc(db, 'session_ids', props.sessionId)
-        await updateDoc(sessionRef, {
-          ...session.value,
-          players: players.value
-        })
-        router.go(-1)
+        const sessionUpdate = {
+          name: session.value.name,
+          date: session.value.date,
+          players: session.value.players,
+          totalBuyIn: session.value.totalBuyIn,
+          totalBuyOut: session.value.totalBuyOut,
+          bigBlind: session.value.bigBlind,
+          smallBlind: session.value.smallBlind,
+          parentHouseId: session.value.parentHouseId,
+          sessionId: session.value.sessionId,
+          hostUid: session.value.hostUid
+        }
+
+        await updateDoc(sessionRef, sessionUpdate)
       } catch (error) {
         errorMessage.value = 'Failed to update session'
         console.error('Error updating session:', error)
       }
+
 
 
     }
@@ -342,9 +359,17 @@ export default defineComponent({
       }
     }
 
+
+
+
+
+
     const submitCreateClick = async () => {
+
           session.value.players = [...players.value]
           session.value.parentHouseId = props.houseId ?? ''
+
+          console.log(props.houseId)
           try {
             const docRef = await addDoc(collection(db, 'session_ids'), session.value)
             session.value.sessionId = docRef.id
@@ -355,7 +380,6 @@ export default defineComponent({
             errorMessage.value = 'Failed to submit session'
           }
 
-          router.push({ name: 'HousePage', params: {houseId: props.houseId ?? ''}})
     }
 
 
@@ -364,6 +388,7 @@ export default defineComponent({
         if(!props.houseId) {
             return
         }
+        console.log(props.houseId)
         const sessionDocRef = doc(db, 'session_ids', sessionId)
         const houseDocRef = doc(db, 'house_ids', props.houseId)
         const userDocRef = doc(db, 'users', currUser.value.uid)
@@ -374,7 +399,7 @@ export default defineComponent({
         })
 
         await updateDoc(sessionDocRef, {
-            sessionId: sessionId
+            sessionsId: sessionId,
         })
 
         await updateDoc(houseDocRef, {
@@ -402,7 +427,8 @@ export default defineComponent({
         } else {
             await submitCreateClick()
         }
-        updatePlayerMembers()
+        await updatePlayerMembers()
+        router.go(-1)
     }
 
 
@@ -420,6 +446,8 @@ export default defineComponent({
 
 
    const updatePlayerMembers = async () => {
+
+        console.log('pass test 1')
         const playerList = session.value.players.filter((player) => player.member && player.uid);
         let playerMembers: PlayerMember[] = [];
 
@@ -444,10 +472,14 @@ export default defineComponent({
                 errorMessage.value = ''
 
             } catch (error) {
+
                 return
             }
         }
 
+        console.log('pass test 2')
+
+        console.log(session.value)
 
         const sessionDocRef = doc(db, 'session_ids', session.value.sessionId)
 
@@ -456,6 +488,7 @@ export default defineComponent({
 
 
 
+        console.log('pass test 3')
 
 
         if (playerMembers.length) {
@@ -476,6 +509,7 @@ export default defineComponent({
             }
 
         }
+        console.log('pass test 4')
 
     };
 
@@ -486,8 +520,21 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currUser.value.uid = user.uid
+                        if (!user.emailVerified) {
+                            router.push({ name: "EmailVerificationPage"})
+
+                        }
+                    }
+
+                })
+
       session.value.players = [...players.value]
     })
+
+
 
 
     watch(players, (newPlayers) => {
@@ -503,6 +550,26 @@ export default defineComponent({
         });
 
       session.value.players = [...newPlayers]
+
+
+      const totalBuyIn = players.value.reduce((sum, player) => sum + (player.buyIn || 0), 0)
+      const totalBuyOut = players.value.reduce((sum, player) => sum + (player.buyOut || 0), 0)
+      session.value.totalBuyOut = totalBuyOut
+      session.value.totalBuyIn = totalBuyIn
+
+
+
+
+      if (session.value.totalBuyIn !== session.value.totalBuyOut) {
+        buyInErrorMessage.value = 'buy-in and buy-out amounts do not match'
+      } else {
+        buyInErrorMessage.value = ''
+
+      }
+
+
+
+
     }, { deep: true })
 
 
