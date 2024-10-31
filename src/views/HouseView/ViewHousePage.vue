@@ -1,5 +1,13 @@
 <template>
-  <div class="flex flex-row ml-10 justify-top font-bebas-neue w-full">
+  <div class="flex flex-col ml-10 justify-top font-bebas-neue w-full">
+      <div class="flex flex-row justify-between mt-3">
+          <button class="text-[2.5vw]  text-button-text-color" @click="handleBackClick">
+            back
+          </button>
+          <SignOutBarComponent
+                  class="mr-7"
+                  > </SignOutBarComponent>
+      </div>
       <div class="flex flex-row justify-between w-full">
           <div :class="[divClass, 'w-1/3']">
               <p :class="[titleClass]"> Recent Sessions </p>
@@ -10,7 +18,9 @@
 
           <div :class="[divClass, 'w-2/3']">
               <p :class="[titleClass]"> House Stats </p>
-              <HouseStatsComponent> </HouseStatsComponent>
+              <HouseStatsComponent
+                      :houseId="houseId"
+              > </HouseStatsComponent>
           </div>
 
       </div>
@@ -21,16 +31,18 @@
 import { defineComponent, ref, onMounted, Ref } from 'vue'
 import { getFirestore, collection, getDoc, doc, Firestore } from "firebase/firestore";
 import { useRoute, useRouter } from 'vue-router'
-import { Session, Sessions } from '@/models/SessionTypes'
+import { Session } from '@/models/SessionTypes'
 import { House, createEmptyHouse } from '@/models/HouseTypes'
 import { Player } from '@/models/PlayerTypes'
 import HouseStatsComponent from '@/components/HouseComponents/HouseStatsComponent.vue'
 import SessionsHouseListComponent from '@/components/SessionComponents/SessionsHouseListComponent.vue'
+import SignOutBarComponent from '@/components/AccountComponents/SignOutBarComponent.vue'
 
 export default defineComponent({
   components: {
     HouseStatsComponent,
     SessionsHouseListComponent,
+    SignOutBarComponent
   },
   props: {
     houseId: {
@@ -88,18 +100,18 @@ export default defineComponent({
 
     onMounted(async () => {
         await fetchHouse()
-        console.log(currHouse.value)
-
-
-
     })
 
 
+    const handleBackClick = () => {
+      router.go(-1)
+    }
 
     return {
         divClass,
         titleClass,
-        sessions
+        sessions,
+        handleBackClick
 
     }
   }

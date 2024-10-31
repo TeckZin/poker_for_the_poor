@@ -127,25 +127,12 @@ export default defineComponent({
         try {
             const userDocSnap: DocumentSnapshot = await getDoc(userDocRef)
 
-            if (userDocSnap.exists()) {
-                return true
+            if (!userDocSnap.exists()) {
+                return false
             }
 
             const currUser = userDocSnap.data() as PlayerMember
-
-            const usersRef = collection(db, 'users')
-            const usersSnap: QuerySnapshot = await getDocs(usersRef)
-
-            const users: PlayerMember[] = usersSnap.docs.map(doc => ({
-                ...doc.data(),
-                uid: doc.id
-            } as PlayerMember))
-
-            console.log(users)
-
-            const usernameExistsFlag =  users.filter((user) => user.username !== username)
-
-            return usernameExistsFlag
+            return true
 
         } catch (error) {
             console.error('Error checking user existence:', error)

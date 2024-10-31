@@ -70,7 +70,6 @@ export default defineComponent({
   },
   name: 'CreateHousePage',
   setup(props, {emit}) {
-    // Component logic can be added here
     const isLoggedIn = ref(false)
     const errMessage = ref('')
     const router = useRouter()
@@ -105,8 +104,9 @@ export default defineComponent({
         if(!newHouse.value.locationValue || !newHouse.value.discription || !newHouse.value.name) {
             errMessage.value = "fill all box"
             return
-
         }
+
+
         errMessage.value = ""
         newHouse.value.hostUid = userUid.value
         const updateUserHostedGame = async () => {
