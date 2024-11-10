@@ -1,0 +1,9 @@
+/dist
+/node_modules
+.gitignore
+*.d.ts
+tailwind.config.js
+postcss.config.js
+babel.config.js
+*.config.js
+

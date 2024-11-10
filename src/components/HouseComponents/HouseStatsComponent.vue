@@ -16,8 +16,17 @@
             <p :class="[pTitleClass]"> Average # of Players:    </p>
             <p :class="[pValueClass]"> {{ averageAmountPlayers }}  </p>
         </div>
-        <div>
+        <div  class="flex flex-col mt-3">
             <p> most active players </p>
+            <ul>
+                <li class="flex flex-row"
+                    v-for="([username, count], index) in
+                            [...playersAmountSessionPlayed.entries()].slice(0,5)"
+                    :key="index">
+                    <p :class="['mr-3']"> {{ username }}:  </p>
+                    <p> {{ count }} </p>
+                </li>
+            </ul>
 
 
 
@@ -113,7 +122,9 @@ export default defineComponent({
                 playerSessionMap.set(player.username, currentCount + 1);
             });
         });
-        playersAmountSessionPlayed.value = playerSessionMap
+        playersAmountSessionPlayed.value =  new Map(
+        [...playerSessionMap.entries()].sort((a, b) => b[1] - a[1]))
+
     }
 
 
@@ -122,7 +133,7 @@ export default defineComponent({
 
     const fetchSessions = async () => {
         try {
-            const sessionSnapShots = await Promise.all(
+            const sessionSnapshots = await Promise.all(
                 house.value.sessionsIdsRef.map(async ref => {
                     try {
                         return await getDoc(ref)
@@ -133,7 +144,7 @@ export default defineComponent({
                 })
             )
 
-            const finalSessions = sessionSnapShots
+            const finalSessions = sessionSnapshots
                 .filter((snapshot): snapshot is DocumentSnapshot => snapshot !== null)
                 .map(snapshot => {
                     if(snapshot.exists()) {

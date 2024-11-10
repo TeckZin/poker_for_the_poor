@@ -12,7 +12,7 @@
           <div :class="[divClass, 'w-1/3']">
               <p :class="[titleClass]"> Recent Sessions </p>
               <SessionsHouseListComponent
-                    @sessions="sessions"
+                    :sessions="sessions"
               > </SessionsHouseListComponent>
           </div>
 
@@ -29,9 +29,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, Ref } from 'vue'
-import { getFirestore, collection, getDoc, doc, Firestore } from "firebase/firestore";
+import { getFirestore, collection, getDoc, doc, Firestore, DocumentSnapshot } from "firebase/firestore";
 import { useRoute, useRouter } from 'vue-router'
-import { Session } from '@/models/SessionTypes'
+import { Session, createEmptySessions } from '@/models/SessionTypes'
 import { House, createEmptyHouse } from '@/models/HouseTypes'
 import { Player } from '@/models/PlayerTypes'
 import HouseStatsComponent from '@/components/HouseComponents/HouseStatsComponent.vue'
@@ -58,14 +58,15 @@ export default defineComponent({
     const db = getFirestore();
 
 
-    const sessions = ref<Session[]>([]);
+    const sessions: Ref<Session[]> = ref(createEmptySessions(0));
 
 
-    const currHouse: Ref<House> = ref(createEmptyHouse())
+    const house: Ref<House> = ref(createEmptyHouse())
 
 
     const divClass = ""
     const titleClass = "text-[2vw]"
+
 
 
     const fetchSession = async () => {
@@ -74,8 +75,50 @@ export default defineComponent({
     }
 
     const fetchSessions = async () => {
-        console.log()
+        try {
+            const sessionSnapshot = await Promise.all(
+                house.value.sessionsIdsRef.map(async ref => {
+                    try {
+                        return await getDoc(ref)
+
+                    } catch (error) {
+                        console.error(`Failed to fetch session: ${ref.id}`, error)
+                        return null
+                    }
+
+
+                })
+            )
+
+            const finalSessions = sessionSnapshot
+                .filter((snapshot): snapshot is DocumentSnapshot => snapshot !== null)
+                .map(snapshot => {
+                    if(snapshot.exists()) {
+                            return snapshot.data() as Session
+
+
+                    }
+                    return null
+
+                }).filter((session): session is Session => session !== null)
+
+
+                if (finalSessions.length > 0) {
+                    sessions.value = finalSessions
+
+                }
+
+
+
+
+        } catch (error) {
+            console.error(error)
+
+        }
+
+
     }
+
 
     const fetchHouse = async () => {
         console.log()
@@ -83,7 +126,7 @@ export default defineComponent({
             const houseDocRef = doc(db, 'house_ids', props.houseId)
             const houseSnap = await getDoc(houseDocRef)
             if (houseSnap.exists()) {
-                currHouse.value = houseSnap.data() as House
+                house.value = houseSnap.data() as House
 
 
             }
@@ -100,6 +143,7 @@ export default defineComponent({
 
     onMounted(async () => {
         await fetchHouse()
+        await fetchSessions()
     })
 
 
